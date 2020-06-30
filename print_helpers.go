@@ -28,7 +28,7 @@ func (antArg AntArg) Prettify() string {
 		Help: antArg.help,
 		Args: deepToJSON(antArg.args),
 	}
-	s, _ := json.MarshalIndent(i, "", "\t")
+	s, _ := json.MarshalIndent(i, "", "  ")
 	return string(s)
 }
 

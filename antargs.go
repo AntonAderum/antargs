@@ -51,7 +51,7 @@ func New(name string, help string) (*AntArg, error) {
 }
 
 // NewSubArg initializes a new argument tied to a parent arg
-func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string) {
+func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string) *Arg {
 	subArg := &Arg{
 		name:     name,
 		help:     help,
@@ -59,6 +59,7 @@ func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string
 		shortcut: shortcut,
 	}
 	arg.subArgs = append(arg.subArgs, subArg)
+	return subArg
 }
 
 // NewArg initializes a new argument tied to a parent AntArg

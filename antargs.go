@@ -24,7 +24,7 @@ type Arg struct {
 	help     string
 	shortcut string
 	isFlag   bool
-	subArgs  []Arg
+	subArgs  []*Arg
 }
 
 // AntArg is the main struct when working with AntArg package.
@@ -33,7 +33,7 @@ type Arg struct {
 type AntArg struct {
 	name string
 	help string
-	args []Arg
+	args []*Arg
 }
 
 // New initializes an instance of AntArgs, should be used for creating the main program AntArg instance
@@ -46,13 +46,13 @@ func New(name string, help string) (*AntArg, error) {
 	return &AntArg{
 		name: name,
 		help: help,
-		args: []Arg{},
+		args: []*Arg{},
 	}, nil
 }
 
 // NewSubArg initializes a new argument tied to a parent arg
 func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string) {
-	subArg := Arg{
+	subArg := &Arg{
 		name:     name,
 		help:     help,
 		isFlag:   isFlag,
@@ -62,12 +62,13 @@ func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string
 }
 
 // NewArg initializes a new argument tied to a parent AntArg
-func (antArg *AntArg) NewArg(name string, help string, isFlag bool, shortcut string) {
+func (antArg *AntArg) NewArg(name string, help string, isFlag bool, shortcut string) *Arg {
 	arg := &Arg{
 		name:     name,
 		help:     help,
 		isFlag:   isFlag,
 		shortcut: shortcut,
 	}
-	antArg.args = append(antArg.args, *arg)
+	antArg.args = append(antArg.args, arg)
+	return arg
 }

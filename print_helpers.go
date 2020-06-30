@@ -7,7 +7,7 @@ import (
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
-func deepToJSON(args []Arg) []jsonArg {
+func deepToJSON(args []*Arg) []jsonArg {
 	jsonArgs := make([]jsonArg, len(args))
 	for i, arg := range args {
 		jsonArgs[i] = jsonArg{

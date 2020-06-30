@@ -7,7 +7,7 @@ func (a AntArg) Equal(b AntArg) bool {
 		deepCompareArgs(a.args, b.args)
 }
 
-func deepCompareArgs(a []Arg, b []Arg) bool {
+func deepCompareArgs(a []*Arg, b []*Arg) bool {
 	if len(a) != len(b) {
 		return false
 	}

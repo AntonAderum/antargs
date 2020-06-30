@@ -8,7 +8,7 @@ func TestNewShouldInitialize(t *testing.T) {
 	want := &AntArg{
 		name: "test",
 		help: "help_test",
-		args: []Arg{},
+		args: []*Arg{},
 	}
 
 	got, err := New("test", "help_test")
@@ -34,7 +34,7 @@ func TestNewArgShouldGiveNewArg(t *testing.T) {
 	want := &AntArg{
 		name: "test",
 		help: "help_test",
-		args: []Arg{{help: "sub_help", name: "sub_name", isFlag: false, shortcut: "s", subArgs: []Arg{}}},
+		args: []*Arg{{help: "sub_help", name: "sub_name", isFlag: false, shortcut: "s", subArgs: []*Arg{}}},
 	}
 
 	got, _ := New("test", "help_test")
@@ -50,13 +50,13 @@ func TestNewSubArgShouldGiveNewSubArg(t *testing.T) {
 	want := &AntArg{
 		name: "test",
 		help: "help_test",
-		args: []Arg{
+		args: []*Arg{
 			{
 				help:     "sub_help",
 				name:     "sub_name",
 				isFlag:   false,
 				shortcut: "s",
-				subArgs: []Arg{{
+				subArgs: []*Arg{{
 					name:     "sub_sub_name",
 					help:     "sub_sub_help",
 					isFlag:   true,
@@ -68,8 +68,8 @@ func TestNewSubArgShouldGiveNewSubArg(t *testing.T) {
 
 	got, _ := New("test", "help_test")
 
-	got.NewArg("sub_name", "sub_help", false, "s")
-	got.args[0].NewSubArg("sub_sub_name", "sub_sub_help", true, "")
+	arg := got.NewArg("sub_name", "sub_help", false, "s")
+	arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
 
 	if !got.Equal(*want) {
 		t.Errorf(ExpectedGotAntArg(*want, *got))

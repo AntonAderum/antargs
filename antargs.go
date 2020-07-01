@@ -51,7 +51,12 @@ func New(name string, help string) (*AntArg, error) {
 }
 
 // NewSubArg initializes a new argument tied to a parent arg
-func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string) *Arg {
+func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string) (*Arg, error) {
+
+	if len(name) == 0 {
+		return nil, fmt.Errorf("Name must have a value")
+	}
+
 	subArg := &Arg{
 		name:     name,
 		help:     help,
@@ -59,11 +64,16 @@ func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string
 		shortcut: shortcut,
 	}
 	arg.subArgs = append(arg.subArgs, subArg)
-	return subArg
+	return subArg, nil
 }
 
 // NewArg initializes a new argument tied to a parent AntArg
-func (antArg *AntArg) NewArg(name string, help string, isFlag bool, shortcut string) *Arg {
+func (antArg *AntArg) NewArg(name string, help string, isFlag bool, shortcut string) (*Arg, error) {
+
+	if len(name) == 0 {
+		return nil, fmt.Errorf("Name must have a value")
+	}
+
 	arg := &Arg{
 		name:     name,
 		help:     help,
@@ -71,5 +81,5 @@ func (antArg *AntArg) NewArg(name string, help string, isFlag bool, shortcut str
 		shortcut: shortcut,
 	}
 	antArg.args = append(antArg.args, arg)
-	return arg
+	return arg, nil
 }

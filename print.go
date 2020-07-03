@@ -11,11 +11,14 @@ func deepToJSON(args []*Arg) []jsonArg {
 	jsonArgs := make([]jsonArg, len(args))
 	for i, arg := range args {
 		jsonArgs[i] = jsonArg{
-			Name:     arg.name,
-			Help:     arg.help,
-			Shortcut: arg.shortcut,
-			IsFlag:   arg.isFlag,
-			SubArgs:  deepToJSON(arg.subArgs),
+			Name:           arg.name,
+			Help:           arg.help,
+			Shortcut:       arg.shortcut,
+			IsFlag:         arg.isFlag,
+			SubArgs:        deepToJSON(arg.subArgs),
+			Values:         arg.values,
+			NumberOfValues: arg.numberOfValues,
+			WasProvided:    arg.wasProvided,
 		}
 	}
 	return jsonArgs

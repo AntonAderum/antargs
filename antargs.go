@@ -5,11 +5,14 @@ import (
 )
 
 type jsonArg struct {
-	Name     string
-	Help     string
-	Shortcut string
-	IsFlag   bool
-	SubArgs  []jsonArg
+	Name           string
+	Help           string
+	Shortcut       string
+	IsFlag         bool
+	SubArgs        []jsonArg
+	Values         []string
+	NumberOfValues int
+	WasProvided    bool
 }
 
 type jsonAntArg struct {
@@ -20,11 +23,14 @@ type jsonAntArg struct {
 
 // Arg is the struct containing a specific argument for an AntArg list of arguments
 type Arg struct {
-	name     string
-	help     string
-	shortcut string
-	isFlag   bool
-	subArgs  []*Arg
+	name           string
+	help           string
+	shortcut       string
+	isFlag         bool
+	subArgs        []*Arg
+	values         []string
+	numberOfValues int
+	wasProvided    bool
 }
 
 // AntArg is the main struct when working with AntArg package.
@@ -62,23 +68,26 @@ func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string
 		help:     help,
 		isFlag:   isFlag,
 		shortcut: shortcut,
+		values:   []string{},
 	}
 	arg.subArgs = append(arg.subArgs, subArg)
 	return subArg, nil
 }
 
 // NewArg initializes a new argument tied to a parent AntArg
-func (antArg *AntArg) NewArg(name string, help string, isFlag bool, shortcut string) (*Arg, error) {
+func (antArg *AntArg) NewArg(name string, help string, isFlag bool, shortcut string, numberOfValues int) (*Arg, error) {
 
 	if len(name) == 0 {
 		return nil, fmt.Errorf("Name must have a value")
 	}
 
 	arg := &Arg{
-		name:     name,
-		help:     help,
-		isFlag:   isFlag,
-		shortcut: shortcut,
+		name:           name,
+		help:           help,
+		isFlag:         isFlag,
+		shortcut:       shortcut,
+		values:         []string{},
+		numberOfValues: numberOfValues,
 	}
 	antArg.args = append(antArg.args, arg)
 	return arg, nil

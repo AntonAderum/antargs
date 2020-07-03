@@ -32,7 +32,7 @@ func TestNewShouldRejectNoName(t *testing.T) {
 
 func TestNewArgShouldRejectNoName(t *testing.T) {
 	antArg, _ := New("test", "help_test")
-	_, err := antArg.NewArg("", "sub_help", false, "")
+	_, err := antArg.NewArg("", "sub_help", false, "", 1)
 
 	if err == nil {
 		t.Errorf(expectedGotString("error", "nil"))
@@ -41,7 +41,7 @@ func TestNewArgShouldRejectNoName(t *testing.T) {
 
 func TestNewSubArgShouldRejectNoName(t *testing.T) {
 	antArg, _ := New("test", "help_test")
-	arg, _ := antArg.NewArg("sub_test", "sub_help", false, "")
+	arg, _ := antArg.NewArg("sub_test", "sub_help", false, "", 1)
 	_, err := arg.NewSubArg("", "sub_sub_help", false, "")
 
 	if err == nil {
@@ -58,7 +58,7 @@ func TestNewArgShouldGiveNewArg(t *testing.T) {
 
 	got, _ := New("test", "help_test")
 
-	got.NewArg("sub_name", "sub_help", false, "s")
+	got.NewArg("sub_name", "sub_help", false, "s", 1)
 
 	if !got.Equal(*want) {
 		t.Errorf(expectedGotAntArg(*want, *got))
@@ -87,7 +87,7 @@ func TestNewSubArgShouldGiveNewSubArg(t *testing.T) {
 
 	got, _ := New("test", "help_test")
 
-	arg, _ := got.NewArg("sub_name", "sub_help", false, "s")
+	arg, _ := got.NewArg("sub_name", "sub_help", false, "s", 1)
 	arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
 
 	if !got.Equal(*want) {
@@ -123,7 +123,7 @@ func TestCanDoNestedSubArg(t *testing.T) {
 
 	got, _ := New("test", "help_test")
 
-	arg, _ := got.NewArg("sub_name", "sub_help", false, "s")
+	arg, _ := got.NewArg("sub_name", "sub_help", false, "s", 1)
 	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
 	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
 

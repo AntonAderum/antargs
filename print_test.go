@@ -9,7 +9,7 @@ func TestPrintsArgumentInformationCorrectly(t *testing.T) {
 	// We include more than we are testing to make sure we are only
 	// getting what we want
 	antArg, _ := New("test", "help_test")
-	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s")
+	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s", 1)
 	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
 	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
 
@@ -25,7 +25,7 @@ func TestPrintsSubArgumentInformationCorrectly(t *testing.T) {
 	// We include more than we are testing to make sure we are only
 	// getting what we want
 	antArg, _ := New("test", "help_test")
-	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s")
+	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s", 1)
 	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
 	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
 
@@ -39,7 +39,7 @@ func TestPrintsSubArgumentInformationCorrectly(t *testing.T) {
 
 func TestPrintsSubSubArgumentInformationCorrectly(t *testing.T) {
 	antArg, _ := New("test", "help_test")
-	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s")
+	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s", 1)
 	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
 	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
 

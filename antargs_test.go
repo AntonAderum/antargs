@@ -5,11 +5,7 @@ import (
 )
 
 func TestNewShouldInitialize(t *testing.T) {
-	want := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{},
-	}
+	want := getTestingAntArgObject()
 
 	got, err := New("test", "help_test")
 
@@ -42,7 +38,7 @@ func TestNewArgShouldRejectNoName(t *testing.T) {
 func TestNewSubArgShouldRejectNoName(t *testing.T) {
 	antArg, _ := New("test", "help_test")
 	arg, _ := antArg.NewArg("sub_test", "sub_help", false, "", 1)
-	_, err := arg.NewSubArg("", "sub_sub_help", false, "")
+	_, err := arg.NewSubArg("", "sub_sub_help", false, "", 1)
 
 	if err == nil {
 		t.Errorf(expectedGotString("error", "nil"))
@@ -50,15 +46,11 @@ func TestNewSubArgShouldRejectNoName(t *testing.T) {
 }
 
 func TestNewArgShouldGiveNewArg(t *testing.T) {
-	want := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{{help: "sub_help", name: "sub_name", isFlag: false, shortcut: "s", subArgs: []*Arg{}}},
-	}
+	want := getTestingAntArgObjectWithArgument(1)
 
 	got, _ := New("test", "help_test")
 
-	got.NewArg("sub_name", "sub_help", false, "s", 1)
+	got.NewArg("sub_name_0", "sub_help_0", false, "", 1)
 
 	if !got.Equal(*want) {
 		t.Errorf(expectedGotAntArg(*want, *got))
@@ -66,29 +58,12 @@ func TestNewArgShouldGiveNewArg(t *testing.T) {
 }
 
 func TestNewSubArgShouldGiveNewSubArg(t *testing.T) {
-	want := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
-	}
+	want := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
 
 	got, _ := New("test", "help_test")
 
-	arg, _ := got.NewArg("sub_name", "sub_help", false, "s", 1)
-	arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
+	arg, _ := got.NewArg("sub_name_0", "sub_help_0", false, "", 1)
+	arg.NewSubArg("sub_sub_name_0", "sub_sub_help_0", false, "", 1)
 
 	if !got.Equal(*want) {
 		t.Errorf(expectedGotAntArg(*want, *got))
@@ -96,36 +71,12 @@ func TestNewSubArgShouldGiveNewSubArg(t *testing.T) {
 }
 
 func TestCanDoNestedSubArg(t *testing.T) {
-	want := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-					subArgs: []*Arg{{
-						name:     "sub_sub_sub_name",
-						help:     "sub_sub_sub_help",
-						isFlag:   false,
-						shortcut: "p",
-					}},
-				}},
-			},
-		},
-	}
+	want := getTestingAntArgObjectWithArgumentAndSubArgumentsAndSubArguments(1, 1, 1)
 
 	got, _ := New("test", "help_test")
-
-	arg, _ := got.NewArg("sub_name", "sub_help", false, "s", 1)
-	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
-	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
+	arg, _ := got.NewArg("sub_name_0", "sub_help_0", false, "", 1)
+	subArg, _ := arg.NewSubArg("sub_sub_name_0", "sub_sub_help_0", false, "", 1)
+	subArg.NewSubArg("sub_sub_sub_name_0", "sub_sub_sub_help_0", false, "", 1)
 
 	if !got.Equal(*want) {
 		t.Errorf(expectedGotAntArg(*want, *got))

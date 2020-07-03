@@ -27,6 +27,9 @@ func deepCompareArgs(a []*Arg, b []*Arg) bool {
 		if a[i].name != b[i].name ||
 			a[i].help != b[i].help ||
 			a[i].shortcut != b[i].shortcut ||
+			a[i].numberOfValues != b[i].numberOfValues ||
+			a[i].wasProvided != b[i].wasProvided ||
+			a[i].isFlag != b[i].isFlag ||
 			!compareValues(a[i].values, b[i].values) ||
 			!deepCompareArgs(a[i].subArgs, b[i].subArgs) {
 			return false

@@ -5,43 +5,9 @@ import (
 )
 
 func TestCompareSameIsTrue(t *testing.T) {
-	a := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
-	}
+	a := getTestingAntArgObjectWithArgumentAndSubArgumentsAndSubArguments(1, 1, 1)
 
-	b := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
-	}
+	b := getTestingAntArgObjectWithArgumentAndSubArgumentsAndSubArguments(1, 1, 1)
 
 	if !a.Equal(*b) {
 		t.Errorf(expectedGotString("true", "false"))
@@ -49,87 +15,76 @@ func TestCompareSameIsTrue(t *testing.T) {
 }
 
 func TestCompareDifferentNameIsFalse(t *testing.T) {
-	a := &AntArg{
-		name: "test_different",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
-	}
+	a := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	a.name = "test_different"
 
-	b := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
-	}
+	b := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
 
 	if a.Equal(*b) {
 		t.Errorf(expectedGotString("true", "false"))
 	}
 }
 
-func TestCompareDifferentSubHelpIsFalse(t *testing.T) {
-	a := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name_different",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
-	}
+func TestCompareDifferentSubArgumentShortcutIsFalse(t *testing.T) {
+	a := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	a.args[0].subArgs[0].shortcut = "d"
 
-	b := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
+	b := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+
+	if a.Equal(*b) {
+		t.Errorf(expectedGotString("true", "false"))
 	}
+}
+
+func TestCompareDifferentSubArgumentNameIsFalse(t *testing.T) {
+	a := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	a.args[0].subArgs[0].name = "different"
+
+	b := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+
+	if a.Equal(*b) {
+		t.Errorf(expectedGotString("true", "false"))
+	}
+}
+
+func TestCompareDifferentSubArgumentHelpIsFalse(t *testing.T) {
+	a := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	a.args[0].subArgs[0].help = "different"
+
+	b := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+
+	if a.Equal(*b) {
+		t.Errorf(expectedGotString("true", "false"))
+	}
+}
+
+func TestCompareDifferentSubArgumentIsFlagIsFalse(t *testing.T) {
+	a := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	a.args[0].subArgs[0].isFlag = true
+
+	b := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+
+	if a.Equal(*b) {
+		t.Errorf(expectedGotString("true", "false"))
+	}
+}
+
+func TestCompareDifferentSubArgumentNumberOfValuesIsFalse(t *testing.T) {
+	a := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	a.args[0].subArgs[0].numberOfValues = 2
+
+	b := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+
+	if a.Equal(*b) {
+		t.Errorf(expectedGotString("true", "false"))
+	}
+}
+
+func TestCompareDifferentSubArgumentWasProvidedIsFalse(t *testing.T) {
+	a := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	a.args[0].subArgs[0].wasProvided = true
+
+	b := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
 
 	if a.Equal(*b) {
 		t.Errorf(expectedGotString("true", "false"))
@@ -137,38 +92,9 @@ func TestCompareDifferentSubHelpIsFalse(t *testing.T) {
 }
 
 func TestCompareDifferentSubLengthIsFalse(t *testing.T) {
-	a := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs:  []*Arg{},
-			},
-		},
-	}
+	a := getTestingAntArgObjectWithArgumentAndSubArgumentsAndSubArguments(1, 1, 2)
 
-	b := &AntArg{
-		name: "test",
-		help: "help_test",
-		args: []*Arg{
-			{
-				help:     "sub_help",
-				name:     "sub_name",
-				isFlag:   false,
-				shortcut: "s",
-				subArgs: []*Arg{{
-					name:     "sub_sub_name",
-					help:     "sub_sub_help",
-					isFlag:   true,
-					shortcut: "",
-				}},
-			},
-		},
-	}
+	b := getTestingAntArgObjectWithArgumentAndSubArgumentsAndSubArguments(1, 1, 1)
 
 	if a.Equal(*b) {
 		t.Errorf(expectedGotString("true", "false"))

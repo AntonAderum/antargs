@@ -10,8 +10,8 @@ func TestPrintsArgumentInformationCorrectly(t *testing.T) {
 	// getting what we want
 	antArg, _ := New("test", "help_test")
 	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s", 1)
-	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
-	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
+	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "", 1)
+	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p", 1)
 
 	wanted := fmt.Sprintf("\n%s\n%s\n\nArguments:\n\n", "test", "help_test")
 	wanted = wanted + fmt.Sprintf("\t%s:\t%s\n\t\t\t%s\n\t\t\tflag: %t\n", "sub_name", "sub_help", "s", false)
@@ -26,8 +26,8 @@ func TestPrintsSubArgumentInformationCorrectly(t *testing.T) {
 	// getting what we want
 	antArg, _ := New("test", "help_test")
 	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s", 1)
-	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
-	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
+	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "", 1)
+	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p", 1)
 
 	wanted := fmt.Sprintf(mainArgumentInformationFormat, "sub_name", "sub_help")
 	wanted = wanted + fmt.Sprintf(subArgumentInformationFormat, "sub_sub_name", "sub_sub_help", "", true)
@@ -40,8 +40,8 @@ func TestPrintsSubArgumentInformationCorrectly(t *testing.T) {
 func TestPrintsSubSubArgumentInformationCorrectly(t *testing.T) {
 	antArg, _ := New("test", "help_test")
 	arg, _ := antArg.NewArg("sub_name", "sub_help", false, "s", 1)
-	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "")
-	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p")
+	subArg, _ := arg.NewSubArg("sub_sub_name", "sub_sub_help", true, "", 1)
+	subArg.NewSubArg("sub_sub_sub_name", "sub_sub_sub_help", false, "p", 1)
 
 	wanted := fmt.Sprintf(mainArgumentInformationFormat, "sub_sub_name", "sub_sub_help")
 	wanted = wanted + fmt.Sprintf(subArgumentInformationFormat, "sub_sub_sub_name", "sub_sub_sub_help", "p", false)

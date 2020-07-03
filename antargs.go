@@ -57,18 +57,19 @@ func New(name string, help string) (*AntArg, error) {
 }
 
 // NewSubArg initializes a new argument tied to a parent arg
-func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string) (*Arg, error) {
+func (arg *Arg) NewSubArg(name string, help string, isFlag bool, shortcut string, numberOfValues int) (*Arg, error) {
 
 	if len(name) == 0 {
 		return nil, fmt.Errorf("Name must have a value")
 	}
 
 	subArg := &Arg{
-		name:     name,
-		help:     help,
-		isFlag:   isFlag,
-		shortcut: shortcut,
-		values:   []string{},
+		name:           name,
+		help:           help,
+		isFlag:         isFlag,
+		shortcut:       shortcut,
+		values:         []string{},
+		numberOfValues: numberOfValues,
 	}
 	arg.subArgs = append(arg.subArgs, subArg)
 	return subArg, nil

@@ -122,8 +122,9 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 			currentArgLength := len(currentArg.values)
 			if currentArgLength < currentArg.numberOfValues {
 				currentArg.values = append(currentArg.values, argument)
+				currentArgLength = currentArgLength + 1
 			}
-			if currentArgLength < currentArg.numberOfValues {
+			if currentArgLength == currentArg.numberOfValues {
 				currentArg.wasProvided = true
 				state = parseState(start)
 			}
@@ -133,8 +134,9 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 			currentSubArgLength := len(currentSubArg.values)
 			if currentSubArgLength < currentSubArg.numberOfValues {
 				currentSubArg.values = append(currentSubArg.values, argument)
+				currentSubArgLength = currentSubArgLength + 1
 			}
-			if currentSubArgLength < currentSubArg.numberOfValues {
+			if currentSubArgLength == currentSubArg.numberOfValues {
 				currentSubArg.wasProvided = true
 				state = parseState(readingArgValues)
 			}

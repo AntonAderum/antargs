@@ -114,8 +114,7 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 					// keep state in foundArg to see if more sub arguments was provided
 					currentSubArg.wasProvided = true
 				} else {
-					// ToDo: parse sub argument value?
-					state = state
+					state = parseState(readingSubArgValues)
 					break
 				}
 			}
@@ -128,10 +127,24 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 				currentArg.wasProvided = true
 				state = parseState(start)
 			}
+		} else if state == readingSubArgValues {
+			// ToDo: state == readingSubArgValues and state == readingArgValues
+			// are doing exactly the same thing, make this into one method/logic block?
+			currentSubArgLength := len(currentSubArg.values)
+			if currentSubArgLength < currentSubArg.numberOfValues {
+				currentSubArg.values = append(currentSubArg.values, argument)
+			}
+			if currentSubArgLength < currentSubArg.numberOfValues {
+				currentSubArg.wasProvided = true
+				state = parseState(readingArgValues)
+			}
 		}
 	}
 	if state == readingArgValues {
-		return fmt.Errorf("Not enough values was provided. %s expects %d values", currentArg.name, currentArg.numberOfValues)
+		return fmt.Errorf("Not enough values was provided. %s expects %d values and got %d\n", currentArg.name, currentArg.numberOfValues, len(currentArg.values))
+	}
+	if state == readingSubArgValues {
+		return fmt.Errorf("Not enough values was provided. %s expects %d values and got %d\n", currentSubArg.name, currentSubArg.numberOfValues, len(currentSubArg.values))
 	}
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 func TestParseOneArgumentAndValue(t *testing.T) {
 	want := getTestingAntArgObjectWithArgument(1)
 	want.args[0].values = []string{"sub_value"}
+	want.args[0].wasProvided = true
 
 	antArg, _ := New("test", "help_test")
 	antArg.NewArg("sub_name_0", "sub_help_0", false, "", 1)
@@ -15,6 +16,19 @@ func TestParseOneArgumentAndValue(t *testing.T) {
 
 	if !antArg.Equal(*want) {
 		t.Errorf(expectedGotAntArg(*want, *antArg))
+	}
+}
+
+func TestParseOneArgumentAndNoValueProvidedReturnsError(t *testing.T) {
+	want := getTestingAntArgObjectWithArgument(1)
+	want.args[0].values = []string{"sub_value"}
+
+	antArg, _ := New("test", "help_test")
+	antArg.NewArg("sub_name_0", "sub_help_0", false, "", 1)
+
+	err := antArg.Parse([]string{"/test/test", "sub_name_0"})
+	if err == nil {
+		t.Errorf(expectedGotString("err", "nil"))
 	}
 }
 
@@ -61,5 +75,25 @@ func TestParseAllowOnlyOneTopLevelReturnsNoErrorWithOneArgument(t *testing.T) {
 
 	if err != nil {
 		t.Errorf(expectedGotString("nil", "error"))
+	}
+}
+
+func TestParseOneArgumentWithOneSubArgumentFlag(t *testing.T) {
+	want := getTestingAntArgObjectWithArgumentAndSubArguments(1, 1)
+	want.args[0].values = []string{"sub_value"}
+	want.args[0].wasProvided = true
+	want.args[0].subArgs[0].wasProvided = true
+	want.args[0].subArgs[0].isFlag = true
+	want.args[0].subArgs[0].numberOfValues = 0
+	want.args[0].subArgs[0].values = []string{}
+
+	antArg, _ := New("test", "help_test")
+	subArg, _ := antArg.NewArg("sub_name_0", "sub_help_0", false, "", 1)
+	subArg.NewSubArg("sub_sub_name_0", "sub_sub_help_0", true, "", 0)
+
+	antArg.Parse([]string{"/test/test", "sub_name_0", "sub_sub_name_0", "sub_value"})
+
+	if !antArg.Equal(*want) {
+		t.Errorf(expectedGotAntArg(*want, *antArg))
 	}
 }

@@ -35,13 +35,22 @@ func parseOptionWasRequested(option parseOption, options []parseOption) bool {
 	return false
 }
 
-func (antArg *AntArg) findArgument(name string) *Arg {
-	for _, arg := range antArg.args {
+func findArgumentFromArray(args []*Arg, name string) *Arg {
+	// This is a very naive implementation take could take a long time
+	// with lots of arguments. Maybe in the future it could benefit from
+	// some more clever search logic, but for now I think its  okay
+	for _, arg := range args {
 		if arg.name == name {
 			return arg
 		}
 	}
 	return nil
+}
+func (antArg *AntArg) findArgument(name string) *Arg {
+	return findArgumentFromArray(antArg.args, name)
+}
+func (arg *Arg) findSubArgument(name string) *Arg {
+	return findArgumentFromArray(arg.subArgs, name)
 }
 
 // Parse takes an array of string arguments assigns the arguments to their
@@ -69,7 +78,8 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 	// but it's now written to "just work"™
 	state := parseState(start)
 	var currentArg *Arg
-	for _, argument := range arguments {
+	var currentSubArg *Arg
+	for i, argument := range arguments {
 		if state == start {
 			if currentArg != nil && parseOptionWasRequested(allowOnlyOneTopLevelArgument, parseOptions) {
 				return fmt.Errorf("Only one top level argument is allowed")
@@ -89,14 +99,33 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 				state = parseState(foundArg)
 			}
 		} else if state == foundArg {
-			// ToDo: parse sub args
-			state = state
+			loops := -1
+			for {
+				loops = loops + 1
+				if len(arguments) < (i + loops) {
+					break
+				}
+				currentSubArg = currentArg.findSubArgument(arguments[i+loops])
+				if currentSubArg == nil {
+					state = parseState(readingArgValues)
+					break
+				} else if currentSubArg.isFlag {
+					// A sub argument was provided and was a flag
+					// keep state in foundArg to see if more sub arguments was provided
+					currentSubArg.wasProvided = true
+				} else {
+					// ToDo: parse sub argument value?
+					state = state
+					break
+				}
+			}
 		} else if state == readingArgValues {
 			currentArgLength := len(currentArg.values)
 			if currentArgLength < currentArg.numberOfValues {
 				currentArg.values = append(currentArg.values, argument)
 			}
 			if currentArgLength < currentArg.numberOfValues {
+				currentArg.wasProvided = true
 				state = parseState(start)
 			}
 		}

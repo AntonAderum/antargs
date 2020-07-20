@@ -189,3 +189,36 @@ func TestParseOneArgumentWithOneSubArgumentAndNoValueProvidedReturnsError(t *tes
 		t.Errorf(expectedGotString("err", "nil"))
 	}
 }
+
+func TestHandleTopLevelArgumentWithoutName(t *testing.T) {
+	want := getTestingAntArgObjectWithArgument(1)
+	want.args[0].values = []string{"sub_value"}
+	want.args[0].wasProvided = true
+
+	antArg, _ := New("test", "help_test")
+	antArg.NewArg("sub_name_0", "sub_help_0", false, "", 1)
+
+	antArg.Parse([]string{"/test/test", "sub_value"}, AllowTopLevelArgumentWithoutName())
+
+	if !antArg.Equal(*want) {
+		t.Errorf(expectedGotAntArg(*want, *antArg))
+	}
+}
+
+func TestHandleMultipleTopLevelArgumentWithoutName(t *testing.T) {
+	want := getTestingAntArgObjectWithArgument(2)
+	want.args[0].values = []string{"sub_value"}
+	want.args[0].wasProvided = true
+	want.args[1].values = []string{"sub_value_2"}
+	want.args[1].wasProvided = true
+
+	antArg, _ := New("test", "help_test")
+	antArg.NewArg("sub_name_0", "sub_help_0", false, "", 1)
+	antArg.NewArg("sub_name_1", "sub_help_1", true, "a", 1)
+
+	antArg.Parse([]string{"/test/test", "sub_value", "sub_value_2"}, AllowTopLevelArgumentWithoutName())
+
+	if !antArg.Equal(*want) {
+		t.Errorf(expectedGotAntArg(*want, *antArg))
+	}
+}

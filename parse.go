@@ -10,11 +10,13 @@ const (
 	allowOnlyOneTopLevelArgument      parseOption = 1
 	dontRemoveFirstArgument           parseOption = 2
 	requireAtleastOneTopLevelArgument parseOption = 3
+	allowTopLevelArgumentWithoutName  parseOption = 4
 )
 
 func AllowOnlyOneTopLevelArgument() parseOption      { return allowOnlyOneTopLevelArgument }
 func DontRemoveFirstArgument() parseOption           { return dontRemoveFirstArgument }
 func RequireAtleastOneTopLevelArgument() parseOption { return requireAtleastOneTopLevelArgument }
+func AllowTopLevelArgumentWithoutName() parseOption  { return allowTopLevelArgumentWithoutName }
 
 type parseState int32
 
@@ -58,8 +60,9 @@ func (arg *Arg) findSubArgument(name string) *Arg {
 //
 // parseOptions can be provided to control the parsing:
 // AllowOnlyOneTopLevelArgument() = Will return error if more than 1 argument is provided at the top level (AntArg.args)
-// DontRemoveFirstArgument() = The default behavior is to remove the first element of the argument array, this settings disables that behavior
+// DontRemoveFirstArgument() = Will disable the default behavior to remove the first element of the argument array
 // RequireAtleastOneTopLevelArgument() = Will return error if no argument has been provided
+// AllowTopLevelArgumentWithoutName() = Will allow the top level arguments to be provided with only values, this will assume no top level argument is provided with name, and that the values are provided in the order that the arguments was provided into the AntArgs object
 //
 // The following errors can be returned:
 // "No argument supplied" = Will happen if RequireOneTopLevelArgument parseOption was requested and no argument was provided
@@ -76,9 +79,16 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 	// lots of arguments are being parsed / in the AntArg.args list.
 	// This should probably/maybe be written in some more clever way,
 	// but it's now written to "just work"™
+	// ToDo: Handle allowing top level arguments without supplying name for them
 	state := parseState(start)
 	var currentArg *Arg
 	var currentSubArg *Arg
+	currentArgIndex := 0
+
+	if parseOptionWasRequested(allowTopLevelArgumentWithoutName, parseOptions) {
+		state = parseState(readingArgValues)
+		currentArg = antArg.args[currentArgIndex]
+	}
 	for i, argument := range arguments {
 		if state == start {
 			if currentArg != nil && parseOptionWasRequested(allowOnlyOneTopLevelArgument, parseOptions) {
@@ -105,6 +115,8 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 				if len(arguments) < (i + loops) {
 					break
 				}
+				// ToDo: I think this break with something like:
+				// ./test-program argument --subArgument 1 --subArgument a
 				currentSubArg = currentArg.findSubArgument(arguments[i+loops])
 				if currentSubArg == nil {
 					state = parseState(readingArgValues)
@@ -126,7 +138,14 @@ func (antArg *AntArg) Parse(arguments []string, parseOptions ...parseOption) err
 			}
 			if currentArgLength == currentArg.numberOfValues {
 				currentArg.wasProvided = true
-				state = parseState(start)
+				if parseOptionWasRequested(allowTopLevelArgumentWithoutName, parseOptions) {
+					if currentArgIndex < len(antArg.args)-1 {
+						currentArgIndex = currentArgIndex + 1
+						currentArg = antArg.args[currentArgIndex]
+					}
+				} else {
+					state = parseState(start)
+				}
 			}
 		} else if state == readingSubArgValues {
 			// ToDo: state == readingSubArgValues and state == readingArgValues

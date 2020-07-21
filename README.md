@@ -2,6 +2,8 @@
 
 An argument package for go.
 
+This is a work in progress. Not usable at the moment.
+
 Basic usage:
 ```go
 // setup

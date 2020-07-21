@@ -25,7 +25,7 @@ fmt.Printf("I say: %s", sayValue)
 terminal:
 ```bash
 $ ./myTestProgram --say "You're A Wizard, Harry!" --style shout
-$ YOU'RE A WIZARD, HARRY!
+$ I say: YOU'RE A WIZARD, HARRY!
 ```
 
 
